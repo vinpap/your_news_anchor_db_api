@@ -1,3 +1,13 @@
+"""
+Vincent Papelard, 2024
+
+This script configures and runs a REST API that enables access to the database
+used in the project "Your News Anchor". It is implemented using FastAPI. The
+database itself is implemented using PostgreSQL.
+
+In order to run this script, execute uvicorn app:app --reload in the directory 
+where this script is located.
+"""
 from typing import List
 
 import yaml
@@ -52,7 +62,7 @@ async def get_rss_feeds():
     cursor.execute("SELECT * FROM rss_feeds")
     results = cursor.fetchall()
 
-    # Adding key to the results for ease of use
+    # Turning the resulting data into a dictionary for ease of use
     dict_results = []
     for rss in results:
         dict_rss = {
@@ -76,6 +86,7 @@ async def update_articles(new_articles: ArticlesUpdateRequest, response: Respons
 
     # Checking the security token to make sure the user is allowed to update
     # the daily articles, as this is a destructive action.
+    # Any unauthorized request will yield a 401 error.
     if new_articles.security_token != config["security_token"]:
         return JSONResponse(status_code=401, content={"msg": "Your security code is not valid"})
     
@@ -93,7 +104,10 @@ async def update_articles(new_articles: ArticlesUpdateRequest, response: Respons
         cursor.execute(request)
     conn.commit()
 
-    # Erasing all old articles
+    # Erasing all old articles.
+    # Old articles are deleted only after the new ones have been added in order
+    # to avoid a situation where a bug would arise after deleting everything in
+    # the table, thus leading to an empty table.
     request = f"""DELETE FROM daily_articles WHERE id IN ({", ". join(old_article_ids)});"""
     cursor.execute(request)
     conn.commit()
