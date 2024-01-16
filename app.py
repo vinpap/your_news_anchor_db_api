@@ -9,6 +9,7 @@ In order to run this script, execute uvicorn app:app --reload in the directory
 where this script is located.
 """
 from typing import List
+from datetime import datetime
 
 import yaml
 import psycopg2
@@ -36,6 +37,12 @@ class Article(BaseModel):
     url: str
     title: str
     content: str
+    authors: str
+    # Publish dates are passed as strings (datetime.datetime objects are not
+    # serializable).
+    # These strings are formatted as '%a %d %b %Y, %I:%M%p'
+    # (or as en empty string if no publish date was found)
+    date: str
 
 class ArticlesUpdateRequest(BaseModel):
     """
@@ -100,7 +107,14 @@ async def update_articles(new_articles: ArticlesUpdateRequest, response: Respons
     for id_tuple in old_article_id_tuples:
         old_article_ids.append(str(id_tuple[0]))
     for article in articles:
-        request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id})"""
+        # Formatting the date (if any) before inserting it in the table
+        date = article.date
+        if date: # i.e. if the date string is not empty
+            date = datetime.strptime(date, '%a %d %b %Y, %I:%M%p')
+            request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, date) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{date}')"""
+        else:
+            request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}')"""
+
         cursor.execute(request)
     conn.commit()
 
@@ -108,7 +122,10 @@ async def update_articles(new_articles: ArticlesUpdateRequest, response: Respons
     # Old articles are deleted only after the new ones have been added in order
     # to avoid a situation where a bug would arise after deleting everything in
     # the table, thus leading to an empty table.
-    request = f"""DELETE FROM daily_articles WHERE id IN ({", ". join(old_article_ids)});"""
+    if old_article_ids:
+        request = f"""DELETE FROM daily_articles WHERE id IN ({", ". join(old_article_ids)});"""
+    else:
+        request = f"""DELETE * FROM daily_articles;"""
     cursor.execute(request)
     conn.commit()
 
