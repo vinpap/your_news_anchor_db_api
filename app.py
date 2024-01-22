@@ -38,6 +38,8 @@ class Article(BaseModel):
     title: str
     content: str
     authors: str
+    # Images as passed as URLs
+    image: str
     # Publish dates are passed as strings (datetime.datetime objects are not
     # serializable).
     # These strings are formatted as '%a %d %b %Y, %I:%M%p'
@@ -107,13 +109,14 @@ async def update_articles(new_articles: ArticlesUpdateRequest, response: Respons
     for id_tuple in old_article_id_tuples:
         old_article_ids.append(str(id_tuple[0]))
     for article in articles:
+
         # Formatting the date (if any) before inserting it in the table
         date = article.date
         if date: # i.e. if the date string is not empty
             date = datetime.strptime(date, '%a %d %b %Y, %I:%M%p')
-            request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, date) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{date}')"""
+            request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, date, image) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{date}', '{article.image}')"""
         else:
-            request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}')"""
+            request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, image) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{article.image}')"""
 
         cursor.execute(request)
     conn.commit()
