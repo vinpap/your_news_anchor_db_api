@@ -25,6 +25,10 @@ with open("./token.txt") as token_file:
 with open("./db_pwd.txt") as pwd_file:
     config["database_password"] = pwd_file.read()
 
+
+# À SUPPRIMER !
+print(config)
+
 # Inits the database
 conn = psycopg2.connect(database=config["database_name"],
                     host=config["database_url"],
