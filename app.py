@@ -19,6 +19,11 @@ from pydantic import BaseModel
 
 app = FastAPI()
 config = yaml.safe_load(open("./config.yml"))
+with open("./token.txt") as token_file:
+    config["security_token"] = token_file.read()
+
+with open("./db_pwd.txt") as pwd_file:
+    config["database_password"] = pwd_file.read()
 
 # Inits the database
 conn = psycopg2.connect(database=config["database_name"],

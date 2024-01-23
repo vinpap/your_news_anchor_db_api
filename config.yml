@@ -1,0 +1,6 @@
+database_url: "vincent-your-news-anchor-db.postgres.database.azure.com" # URL to the database that contains the
+# data
+database_port: "5432" # Port number used for the connection
+database_name: "your_news_anchor"
+database_user: "vincent"
+
