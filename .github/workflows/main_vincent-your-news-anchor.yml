@@ -62,8 +62,8 @@ jobs:
         run: |
           touch ./token.txt
           touch ./db_pwd.txt
-          echo ${{ secrets.SECRET_API_TOKEN }} >> token.txt
-          echo ${{ secrets.SECRET_DB_PWD }} >> db_pwd.txt
+          echo -n ${{ secrets.SECRET_API_TOKEN }} >> token.txt
+          echo -n ${{ secrets.SECRET_DB_PWD }} >> db_pwd.txt
 
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
