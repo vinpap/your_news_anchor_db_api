@@ -58,7 +58,7 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
       
-      - name: Create secret files (APi token and DB password)
+      - name: Create secret values in environment (APi token and DB password)
         run: |
           export API_TOKEN=${{ secrets.SECRET_API_TOKEN }}
           export DB_PWD=${{ secrets.SECRET_DB_PWD }}
