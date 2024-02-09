@@ -8,22 +8,22 @@ database itself is implemented using PostgreSQL.
 In order to run this script, execute uvicorn app:app --reload in the directory 
 where this script is located.
 """
+import os
 from typing import List
 from datetime import datetime
 
 import yaml
 import psycopg2
-from fastapi import FastAPI, Response, status
+from fastapi import FastAPI, Response
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 app = FastAPI()
 config = yaml.safe_load(open("./config.yml"))
-with open("./token.txt") as token_file:
-    config["security_token"] = token_file.read()
 
-with open("./db_pwd.txt") as pwd_file:
-    config["database_password"] = pwd_file.read()
+# Getting API key and DB password fron environment values
+config["security_token"] = os.environ["API_TOKEN"]
+config["database_password"] = os.environ["DB_PWD"]
 
 
 # Inits the database
