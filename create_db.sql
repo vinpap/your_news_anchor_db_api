@@ -5,7 +5,7 @@
 -- Dumped from database version 16.2
 -- Dumped by pg_dump version 16.2 (Ubuntu 16.2-1.pgdg22.04+1)
 
--- Started on 2024-04-03 11:04:54 CEST
+-- Started on 2024-04-03 11:08:25 CEST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -222,7 +222,8 @@ CREATE TABLE public.users (
     id integer NOT NULL,
     password_hash character varying NOT NULL,
     is_admin boolean NOT NULL,
-    creation_date date NOT NULL
+    creation_date date NOT NULL,
+    username character varying NOT NULL
 );
 
 
@@ -335,7 +336,7 @@ COPY public.user_sources (id, user_id, url, language, topic, name) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.users (id, password_hash, is_admin, creation_date) FROM stdin;
+COPY public.users (id, password_hash, is_admin, creation_date, username) FROM stdin;
 \.
 
 
@@ -381,7 +382,7 @@ SELECT pg_catalog.setval('public.user_sources_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.users_id_seq', 2, true);
 
 
 --
@@ -465,7 +466,7 @@ ALTER TABLE ONLY public.user_sources
     ADD CONSTRAINT user_sources_users_fk FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
--- Completed on 2024-04-03 11:04:56 CEST
+-- Completed on 2024-04-03 11:08:27 CEST
 
 --
 -- PostgreSQL database dump complete
