@@ -12,7 +12,8 @@ L'API est actuellement déployée sur Microsoft Azure et disponible ici : https:
 Le script **app.py** permet d'exécuter l'API. Voici comment tester l'API localement :
 1) Installer les dépendances :
 ```
-pip install -r requirements.txt
+pip install pipenv
+pipenv install
 ```
 2) Paramétrer l'accès à la base de données. La base de données à utiliser doit être définie dans le fichier config.yml. Par défaut, l'API utilise une base de données PostgreSQL déployée sur Azure :
 ```
@@ -29,7 +30,7 @@ export DB_PWD=<entrez le mot de passe de la base de données spécifiée dans co
 ```
 4) Exécuter **app.py** pour lancer l'API :
 ```
-uvicorn app:app --reload
+pipenv run uvicorn app:app --reload
 ```
 L'API est ensuite prête à traiter des requêtes.
 
