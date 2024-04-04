@@ -83,7 +83,7 @@ async def root():
     """
     Returns a help message.
     """
-    return {"msg": "Please send requests to the /feeds and /update_articles endpoints"}
+    return {"msg": "Please send requests to the /feeds, /all_feeds and /update_articles endpoints"}
 
 
 @app.post("/feeds", status_code=200)
