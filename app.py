@@ -60,21 +60,48 @@ class ArticlesUpdateRequest(BaseModel):
     security_token: str
     articles: List[Article]
 
+class FeedsRetrievalRequest(BaseModel):
+    """
+    Request sent to the /feeds in order to retrieve the list of feeds for
+    a user.
+    """
+    username: str # The name of the user
+    security_token: str # The API security token
+
 
 @app.get("/")
 async def root():
     """
     Returns a help message.
     """
-    raise NotImplemented
+    return {"msg": "Please send requests to the /feeds and /update_articles endpoints"}
 
-@app.get("/feeds")
-async def get_rss_feeds():
+@app.post("/feeds", status_code=200)
+async def get_rss_feeds(retrieval_request: FeedsRetrievalRequest, response: Response):
     """
     Returns a list of all the RSS feeds to extract data from.
     """
+    if retrieval_request.security_token != config["security_token"]:
+        return JSONResponse(status_code=401, content={"msg": "Your security code is not valid"})
+    
+    username = retrieval_request.username
+    user_exists_request = f"""SELECT * FROM users WHERE username='{username}'"""
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM rss_feeds")
+    cursor.execute(user_exists_request)
+    results = cursor.fetchall()
+    if not results:
+        return JSONResponse(status_code=401, content={"msg": f"User {username} does not exist in the database"})
+
+    get_id_query = f"""SELECT id from users where username='{username}'"""
+    cursor.execute(get_id_query)
+    results = cursor.fetchall()
+    if not results:
+        JSONResponse(status_code=401, content={"msg": f"Error: could not retrieve id for use {username}"})
+    user_id = results[0][0]
+    print(user_id)
+    fetch_rss_feeds_request = f"""SELECT id, url, language, topic, name FROM (select id, url, language, topic, name from user_sources where user_id={user_id}) union  (select id, url, language, topic, name from standard_sources where not exists (select * from user_sources where user_sources.url=standard_sources.url));"""
+    
+    cursor.execute(fetch_rss_feeds_request)
     results = cursor.fetchall()
 
     # Turning the resulting data into a dictionary for ease of use
@@ -82,10 +109,10 @@ async def get_rss_feeds():
     for rss in results:
         dict_rss = {
             "source_id": rss[0],
-            "name": rss[1],
-            "url": rss[2],
+            "name": rss[4],
+            "url": rss[1],
             "topic": rss[3],
-            "language": rss[4]
+            "language": rss[2]
         }
         dict_results.append(dict_rss)
     return dict_results
