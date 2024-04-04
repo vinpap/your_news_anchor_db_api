@@ -195,14 +195,14 @@ async def update_articles(new_articles: ArticlesUpdateRequest, response: Respons
         if date: # i.e. if the date string is not empty
             date = datetime.strptime(date, '%a %d %b %Y, %I:%M%p')
             if article.is_from_user:
-                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, date, image, is_from_user, user_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{date}', '{article.image}', TRUE, {article.source_id})"""
+                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, date, image, is_from_user, user_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{date}', '{article.image}', true, {article.source_id})"""
             else:
-                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, date, image, is_from_user, standard_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{date}', '{article.image}', FALSE, {article.source_id})"""
+                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, date, image, is_from_user, standard_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{date}', '{article.image}', false, {article.source_id})"""
         else:
             if article.is_from_user:
-                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, image, is_from_user, user_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{article.image}', TRUE, {article.source_id})"""
+                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, image, is_from_user, user_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{article.image}', true, {article.source_id})"""
             else:
-                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, image, is_from_user, standard_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{article.image}', FALSE, {article.source_id})"""
+                request = f"""INSERT INTO daily_articles(title, url, content, rss_source_id, authors, image, is_from_user, standard_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', {article.source_id}, '{article.authors.replace("'", '"')}', '{article.image}', false, {article.source_id})"""
         cursor.execute(request)
     conn.commit()
 
