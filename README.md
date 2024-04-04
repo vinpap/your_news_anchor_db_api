@@ -38,4 +38,9 @@ Vous pouvez tester les différents points de terminaison de l'API en vous rendan
 
 ![Les différents points de terminaison de l'API sont présentés sur la page /docs](./img/screenshot_api.png)
 
+## Changer de base de données
+Par défaut, cette API utilise une base de données PostgreSQL hébergée sur Azure. Il est possible de créer sa propre base de données en suivant ces deux étapes :
+1) Sur un serveur PostgreSQL, exécuter le contenu du script 'create_db.sql'
+2) Modifier le contenu du fichier config.yml en conséquence pour indiquer la nouvelle adresse de l'hôte, le nouveau port de connexion, etc...
+
 
