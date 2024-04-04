@@ -6,7 +6,7 @@ Trois points de terminaison sont disponibles :
 - /all_feeds : permet de récupérer la liste de tous les flux RSS enregistrés dans l'application (tous utilisateurs confondus)
 - /update_articles : remplace tous les articles d'information enregistrés dans la base de données par une nouvelle liste d'articles envoyée avec la requête.
 
-L'API est actuellement déployée sur Microsoft Azure et disponible à [l'adresse suivante](https://vincent-your-news-anchor.azurewebsites.net).
+L'API est actuellement déployée sur Microsoft Azure et disponible ici : https://vincent-your-news-anchor.azurewebsites.net.
 
 ## Lancer l'API localement
 Le script **app.py** permet d'exécuter l'API. Voici comment tester l'API localement :
