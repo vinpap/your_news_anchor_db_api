@@ -203,7 +203,7 @@ async def update_articles(new_articles: ArticlesUpdateRequest, response: Respons
                 request = f"""INSERT INTO daily_articles(title, url, content, authors, image, is_from_user, user_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', '{article.authors.replace("'", '"')}', '{article.image}', true, {article.source_id})"""
             else:
                 request = f"""INSERT INTO daily_articles(title, url, content, authors, image, is_from_user, standard_source_id) VALUES('{article.title.replace("'", '"')}', '{article.url.replace("'", '"')}', '{article.content.replace("'", '"')}', '{article.authors.replace("'", '"')}', '{article.image}', false, {article.source_id})"""
-        print(request)
+        return request
         cursor.execute(request)
     conn.commit()
 
