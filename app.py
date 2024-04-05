@@ -74,8 +74,8 @@ class FeedsRetrievalRequest(BaseModel):
     a user.
     """
 
-    username: str  # The name of the user
     security_token: str  # The API security token
+    username: str  # The name of the user
 
 
 @app.get("/")
@@ -119,10 +119,11 @@ async def get_rss_feeds(retrieval_request: FeedsRetrievalRequest, response: Resp
             content={"msg": f"Error: could not retrieve id for use {username}"},
         )
     user_id = results[0][0]
-    print(user_id)
-    fetch_rss_feeds_request = f"""SELECT url, language, topic, name FROM (select url, language, topic, name from user_sources where user_id={user_id}) union  (select url, language, topic, name from standard_sources where not exists (select * from user_sources where user_sources.url=standard_sources.url));"""
-
+    import time
+    
+    fetch_rss_feeds_request = f"""SELECT url, language, topic, name FROM (select url, language, topic, name from user_sources where user_id={user_id}) union  (select url, language, topic, name from standard_sources where not exists (select id from user_sources where user_sources.url=standard_sources.url));"""
     cursor.execute(fetch_rss_feeds_request)
+
     results = cursor.fetchall()
 
     # Turning the resulting data into a dictionary for ease of use
@@ -142,6 +143,7 @@ async def get_all_rss_feeds(secret_token: str, response: Response):
         return JSONResponse(
             status_code=401, content={"msg": "Your security code is not valid"}
         )
+
 
     # Retrieving user-added sources
     fetch_user_rss_feeds_request = (
