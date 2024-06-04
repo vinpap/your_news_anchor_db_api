@@ -39,6 +39,8 @@ Vous pouvez tester les différents points de terminaison de l'API en vous rendan
 
 ![Les différents points de terminaison de l'API sont présentés sur la page /docs](./img/screenshot_api.png)
 
+La clé secrète de l'API doit être jointe à toutes les requêtes que vous lui envoyez pour que celles-ci soient acceptées. **Rapprochez-vous de votre service informatique pour obtenir cette clé**.
+
 ## Changer de base de données
 Par défaut, cette API utilise une base de données PostgreSQL hébergée sur Azure. Il est possible de créer sa propre base de données en suivant ces deux étapes :
 1) Sur un serveur PostgreSQL, exécuter le contenu du script 'create_db.sql' grâce à la commande ```mysql -h <hôte> -u <utilisateur> < ./create_db.sql ```
